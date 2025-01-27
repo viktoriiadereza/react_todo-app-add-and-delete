@@ -3,6 +3,7 @@
 
 import React from 'react';
 import { Todo } from '../../types/Todo';
+import classNames from 'classnames';
 
 interface Props {
   todo: Todo;
@@ -12,7 +13,12 @@ interface Props {
 
 export const TodoItem: React.FC<Props> = ({ todo, onDelete, onToggle }) => {
   return (
-    <div data-cy="Todo" className={`todo ${todo.completed ? 'completed' : ''}`}>
+    <div
+      data-cy="Todo"
+      className={classNames('todo', {
+        completed: todo.completed,
+      })}
+    >
       {/* Checkbox для позначення виконання */}
       <label className="todo__status-label">
         <input
@@ -41,12 +47,12 @@ export const TodoItem: React.FC<Props> = ({ todo, onDelete, onToggle }) => {
       </button>
 
       {/* Індикація завантаження (isDeleting) */}
-      {todo.isDeleting && (
-        <div data-cy="TodoLoader" className="modal overlay">
+        <div data-cy="TodoLoader" className={classNames('modal', 'overlay', {
+            'is-active': todo.isDeleting,
+          })}>
           <div className="modal-background has-background-white-ter" />
           <div className="loader" />
         </div>
-      )}
     </div>
   );
 };

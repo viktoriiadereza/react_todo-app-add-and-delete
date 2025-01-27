@@ -3,10 +3,6 @@ import { Todo } from '../../types/Todo';
 
 interface Props {
   todos: Todo[];
-  filter: 'all' | 'active' | 'completed';
-  setFilter: React.Dispatch<
-    React.SetStateAction<'all' | 'active' | 'completed'>
-  >;
   handleClearCompleted: () => Promise<void>;
 }
 
