@@ -12,24 +12,12 @@ interface Props {
 
 export const TodoList: React.FC<Props> = ({
   todos,
-  isLoading,
   tempTodo,
   handleDeleteTodo,
   onToggle,
 }) => {
   return (
     <section className="todoapp__main" data-cy="TodoList">
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : (
-        <>
-          {tempTodo && (
-            <TodoItem
-              todo={tempTodo}
-              onDelete={handleDeleteTodo}
-              onToggle={onToggle}
-            />
-          )}
           {todos.map(todo => (
             <TodoItem
               key={todo.id}
@@ -38,8 +26,14 @@ export const TodoList: React.FC<Props> = ({
               onToggle={onToggle}
             />
           ))}
-        </>
-      )}
+
+          {tempTodo && (
+            <TodoItem
+              todo={{ ...tempTodo, isLoading: true }}
+              onDelete={handleDeleteTodo}
+              onToggle={onToggle}
+            />
+          )}
     </section>
   );
 };

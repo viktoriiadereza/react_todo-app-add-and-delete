@@ -17,6 +17,7 @@ export const TodoItem: React.FC<Props> = ({ todo, onDelete, onToggle }) => {
       data-cy="Todo"
       className={classNames('todo', {
         completed: todo.completed,
+        'todo--loading': todo.isDeleting || todo.isLoading,
       })}
     >
       {/* Checkbox для позначення виконання */}
@@ -27,6 +28,7 @@ export const TodoItem: React.FC<Props> = ({ todo, onDelete, onToggle }) => {
           className="todo__status"
           checked={todo.completed}
           onChange={() => onToggle(todo.id)}
+          disabled={todo.isLoading || todo.isDeleting}
         />
       </label>
 
@@ -42,17 +44,21 @@ export const TodoItem: React.FC<Props> = ({ todo, onDelete, onToggle }) => {
         data-cy="TodoDelete"
         aria-label="Delete todo"
         onClick={() => onDelete(todo.id)}
+        disabled={todo.isLoading || todo.isDeleting}
       >
         ×
       </button>
 
       {/* Індикація завантаження (isDeleting) */}
-        <div data-cy="TodoLoader" className={classNames('modal', 'overlay', {
-            'is-active': todo.isDeleting,
-          })}>
-          <div className="modal-background has-background-white-ter" />
-          <div className="loader" />
-        </div>
+      <div
+        data-cy="TodoLoader"
+        className={classNames('modal', 'overlay', {
+          'is-active': todo.isDeleting || todo.isLoading,
+        })}
+      >
+        <div className="modal-background has-background-white-ter" />
+        <div className="loader" />
+      </div>
     </div>
   );
 };
