@@ -5,8 +5,8 @@ import { TodoItem } from '../TodoItem/TodoItem';
 interface Props {
   todos: Todo[];
   isLoading: boolean;
-  tempTodo: Todo | null; // Додано tempTodo
-  handleDeleteTodo: (todoId: number) => Promise<void>; // Додано handleDeleteTodo
+  tempTodo: Todo | null;
+  handleDeleteTodo: (todoId: number) => Promise<void>;
   onToggle: (todoId: number) => void;
 }
 
@@ -18,22 +18,23 @@ export const TodoList: React.FC<Props> = ({
 }) => {
   return (
     <section className="todoapp__main" data-cy="TodoList">
-          {todos.map(todo => (
-            <TodoItem
-              key={todo.id}
-              todo={todo}
-              onDelete={handleDeleteTodo}
-              onToggle={onToggle}
-            />
-          ))}
+      {/* This is a completed todo */}
+      {todos.map(todo => (
+        <TodoItem
+          key={todo.id}
+          todo={todo}
+          onDelete={handleDeleteTodo}
+          onToggle={onToggle}
+        />
+      ))}
 
-          {tempTodo && (
-            <TodoItem
-              todo={{ ...tempTodo, isLoading: true }}
-              onDelete={handleDeleteTodo}
-              onToggle={onToggle}
-            />
-          )}
+      {tempTodo && (
+        <TodoItem
+          todo={{ ...tempTodo, isLoading: true }}
+          onDelete={handleDeleteTodo}
+          onToggle={onToggle}
+        />
+      )}
     </section>
   );
 };

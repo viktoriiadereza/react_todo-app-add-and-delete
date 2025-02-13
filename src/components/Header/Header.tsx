@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { Todo } from '../../types/Todo';
 
 interface Props {
   newTodoTitle: string;
@@ -8,6 +9,7 @@ interface Props {
     focusInput: () => void,
   ) => Promise<void>;
   isLoading: boolean;
+  todos: Todo[];
 }
 
 export const Header: React.FC<Props> = ({
@@ -15,25 +17,30 @@ export const Header: React.FC<Props> = ({
   setNewTodoTitle,
   handleAddTodo,
   isLoading,
+  todos,
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!isLoading && inputRef.current) {
-      inputRef.current.focus();
+      setTimeout(() => inputRef.current?.focus(), 0);
     }
-  }, [isLoading]);
+  }, [isLoading, todos.length]);
 
   const focusInput = () => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
+    inputRef.current?.focus();
   };
 
   return (
     <header className="todoapp__header">
-      <button type="button" className="todoapp__toggle-all" />
+      {/* this button should have `active` class only if all todos are completed */}
+      <button
+        type="button"
+        className="todoapp__toggle-all"
+        data-cy="ToggleAllButton"
+      />
 
+      {/* Add a todo on form submit */}
       <form onSubmit={event => handleAddTodo(event, focusInput)}>
         <input
           ref={inputRef}

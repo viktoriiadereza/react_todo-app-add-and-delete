@@ -20,7 +20,6 @@ export const TodoItem: React.FC<Props> = ({ todo, onDelete, onToggle }) => {
         'todo--loading': todo.isDeleting || todo.isLoading,
       })}
     >
-      {/* Checkbox для позначення виконання */}
       <label className="todo__status-label">
         <input
           data-cy="TodoStatus"
@@ -32,12 +31,11 @@ export const TodoItem: React.FC<Props> = ({ todo, onDelete, onToggle }) => {
         />
       </label>
 
-      {/* Заголовок завдання */}
       <span data-cy="TodoTitle" className="todo__title">
         {todo.title}
       </span>
 
-      {/* Кнопка для видалення завдання */}
+      {/* Remove button appears only on hover */}
       <button
         type="button"
         className="todo__remove"
@@ -49,7 +47,7 @@ export const TodoItem: React.FC<Props> = ({ todo, onDelete, onToggle }) => {
         ×
       </button>
 
-      {/* Індикація завантаження (isDeleting) */}
+      {/* 'is-active' class puts this modal on top of the todo */}
       <div
         data-cy="TodoLoader"
         className={classNames('modal', 'overlay', {

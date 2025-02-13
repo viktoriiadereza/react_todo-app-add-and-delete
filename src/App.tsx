@@ -41,20 +41,12 @@ export const App: React.FC = () => {
     loadTodos();
   }, []);
 
-  useEffect(() => {
-    if (error) {
-      const timer = setTimeout(() => setError(null), 3000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [error]);
-
   const handleAddTodo = async (title: string, focusInput: () => void) => {
     const trimmedTitle = title.trim();
 
     if (!trimmedTitle) {
       setError('Title should not be empty');
-      setTimeout(() => focusInput(), 0);
+      focusInput();
 
       return;
     }
@@ -79,7 +71,8 @@ export const App: React.FC = () => {
       });
 
       setTodos(prevTodos => [...prevTodos, createdTodo]);
-      setNewTodoTitle(''); // Очищаємо поле тільки після успіху
+      setNewTodoTitle('');
+      focusInput();
     } catch {
       setError('Unable to add a todo');
     } finally {
@@ -98,6 +91,14 @@ export const App: React.FC = () => {
     try {
       await deleteTodo(todoId);
       setTodos(prevTodos => prevTodos.filter(todo => todo.id !== todoId));
+      setTimeout(() => {
+        const inputField =
+          document.querySelector<HTMLInputElement>('.todoapp__new-todo');
+
+        if (inputField) {
+          inputField.focus();
+        }
+      }, 50);
     } catch {
       setError('Unable to delete a todo');
       setTodos(prevTodos =>
@@ -112,10 +113,33 @@ export const App: React.FC = () => {
     const completedTodos = todos.filter(todo => todo.completed);
 
     try {
-      await Promise.all(completedTodos.map(todo => deleteTodo(todo.id)));
-      setTodos(prevTodos => prevTodos.filter(todo => !todo.completed));
-    } catch {
-      setError('Unable to delete some completed todos');
+      const results = await Promise.allSettled(
+        completedTodos.map(todo => deleteTodo(todo.id)),
+      );
+
+      results.forEach(result => {
+        if (result.status === 'rejected') {
+          setError('Unable to delete a todo');
+        }
+      });
+
+      setTodos(prevTodos =>
+        prevTodos.filter(
+          todo =>
+            !completedTodos.some(
+              completedTodo =>
+                completedTodo.id === todo.id &&
+                results[completedTodos.indexOf(completedTodo)].status ===
+                  'fulfilled',
+            ),
+        ),
+      );
+
+      setTimeout(() => {
+        document.querySelector<HTMLInputElement>('.todoapp__new-todo')?.focus();
+      }, 0);
+    } catch (errorMessage) {
+      setError('Unable to delete a todo');
     }
   };
 
@@ -160,6 +184,7 @@ export const App: React.FC = () => {
               setNewTodoTitle={setNewTodoTitle}
               handleAddTodo={handleFormSubmit}
               isLoading={isLoading}
+              todos={todos}
             />
 
             <TodoList

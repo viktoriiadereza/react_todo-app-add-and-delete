@@ -15,16 +15,17 @@ export const Footer: React.FC<Props> = ({ todos, handleClearCompleted }) => {
       <span data-cy="TodosCounter" className="todo-count">
         {activeTodosCount} items left
       </span>
-      {completedTodosCount > 0 && (
-        <button
-          data-cy="ClearCompletedButton"
-          type="button"
-          className="clear-completed"
-          onClick={handleClearCompleted}
-        >
-          Clear completed
-        </button>
-      )}
+
+      {/* this button should be disabled if there are no completed todos */}
+      <button
+        data-cy="ClearCompletedButton"
+        type="button"
+        className="todoapp__clear-completed"
+        onClick={handleClearCompleted}
+        disabled={completedTodosCount === 0}
+      >
+        Clear completed
+      </button>
     </footer>
   );
 };
