@@ -8,7 +8,6 @@ import { Todo } from './types/Todo';
 import { Header } from './components/Header';
 import { TodoList } from './components/TodoList';
 import { Footer } from './components/Footer';
-import { Filter } from './components/Filter';
 import { ErrorNotification } from './components/ErrorNotification';
 
 export const App: React.FC = () => {
@@ -200,9 +199,9 @@ export const App: React.FC = () => {
                 <Footer
                   todos={todos}
                   handleClearCompleted={clearCompletedTodos}
+                  filter={filter}
+                  setFilter={setFilter}
                 />
-
-                <Filter filter={filter} setFilter={setFilter} />
               </>
             )}
           </div>

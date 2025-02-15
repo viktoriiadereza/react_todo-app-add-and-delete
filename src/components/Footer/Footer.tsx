@@ -1,12 +1,15 @@
 import React from 'react';
 import { Todo } from '../../types/Todo';
+import { Filter } from '../Filter';
 
 interface Props {
   todos: Todo[];
   handleClearCompleted: () => Promise<void>;
+  filter: 'all' | 'active' | 'completed';
+  setFilter: (filter: 'all' | 'active' | 'completed') => void;
 }
 
-export const Footer: React.FC<Props> = ({ todos, handleClearCompleted }) => {
+export const Footer: React.FC<Props> = ({ todos, handleClearCompleted, filter, setFilter }) => {
   const activeTodosCount = todos.filter(todo => !todo.completed).length;
   const completedTodosCount = todos.length - activeTodosCount;
 
@@ -15,6 +18,8 @@ export const Footer: React.FC<Props> = ({ todos, handleClearCompleted }) => {
       <span data-cy="TodosCounter" className="todo-count">
         {activeTodosCount} items left
       </span>
+
+      <Filter filter={filter} setFilter={setFilter} />
 
       {/* this button should be disabled if there are no completed todos */}
       <button
