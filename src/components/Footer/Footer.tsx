@@ -1,15 +1,21 @@
 import React from 'react';
 import { Todo } from '../../types/Todo';
 import { Filter } from '../Filter';
+import { FilterType } from '../../types/FilterType';
 
 interface Props {
   todos: Todo[];
   handleClearCompleted: () => Promise<void>;
-  filter: 'all' | 'active' | 'completed';
-  setFilter: (filter: 'all' | 'active' | 'completed') => void;
+  filter: FilterType;
+  setFilter: (filter: FilterType) => void;
 }
 
-export const Footer: React.FC<Props> = ({ todos, handleClearCompleted, filter, setFilter }) => {
+export const Footer: React.FC<Props> = ({
+  todos,
+  handleClearCompleted,
+  filter,
+  setFilter,
+}) => {
   const activeTodosCount = todos.filter(todo => !todo.completed).length;
   const completedTodosCount = todos.length - activeTodosCount;
 

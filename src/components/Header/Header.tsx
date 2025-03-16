@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { Todo } from '../../types/Todo';
 
 interface Props {
@@ -10,6 +10,7 @@ interface Props {
   ) => Promise<void>;
   isLoading: boolean;
   todos: Todo[];
+  inputRef: React.RefObject<HTMLInputElement>;
 }
 
 export const Header: React.FC<Props> = ({
@@ -18,14 +19,13 @@ export const Header: React.FC<Props> = ({
   handleAddTodo,
   isLoading,
   todos,
+  inputRef,
 }) => {
-  const inputRef = useRef<HTMLInputElement>(null);
-
   useEffect(() => {
     if (!isLoading && inputRef.current) {
       setTimeout(() => inputRef.current?.focus(), 0);
     }
-  }, [isLoading, todos.length]);
+  }, [isLoading, todos.length, inputRef]);
 
   const focusInput = () => {
     inputRef.current?.focus();

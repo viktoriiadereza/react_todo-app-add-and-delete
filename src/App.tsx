@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable jsx-a11y/control-has-associated-label */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { UserWarning } from './UserWarning';
 import { getTodos, addTodo, deleteTodo, USER_ID } from './api/todos';
 import { Todo } from './types/Todo';
@@ -9,14 +9,16 @@ import { Header } from './components/Header';
 import { TodoList } from './components/TodoList';
 import { Footer } from './components/Footer';
 import { ErrorNotification } from './components/ErrorNotification';
+import { FilterType } from './types/FilterType';
 
 export const App: React.FC = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
+  const [filter, setFilter] = useState<FilterType>(FilterType.All);
   const [isLoading, setIsLoading] = useState(false);
   const [tempTodo, setTempTodo] = useState<Todo | null>(null);
   const [newTodoTitle, setNewTodoTitle] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!USER_ID) {
@@ -91,12 +93,7 @@ export const App: React.FC = () => {
       await deleteTodo(todoId);
       setTodos(prevTodos => prevTodos.filter(todo => todo.id !== todoId));
       setTimeout(() => {
-        const inputField =
-          document.querySelector<HTMLInputElement>('.todoapp__new-todo');
-
-        if (inputField) {
-          inputField.focus();
-        }
+        inputRef.current?.focus();
       }, 50);
     } catch {
       setError('Unable to delete a todo');
@@ -135,7 +132,7 @@ export const App: React.FC = () => {
       );
 
       setTimeout(() => {
-        document.querySelector<HTMLInputElement>('.todoapp__new-todo')?.focus();
+        inputRef.current?.focus();
       }, 0);
     } catch (errorMessage) {
       setError('Unable to delete a todo');
@@ -159,11 +156,11 @@ export const App: React.FC = () => {
   };
 
   const filteredTodos = todos.filter(todo => {
-    if (filter === 'active') {
+    if (filter === FilterType.Active) {
       return !todo.completed;
     }
 
-    if (filter === 'completed') {
+    if (filter === FilterType.Completed) {
       return todo.completed;
     }
 
@@ -184,6 +181,7 @@ export const App: React.FC = () => {
               handleAddTodo={handleFormSubmit}
               isLoading={isLoading}
               todos={todos}
+              inputRef={inputRef}
             />
 
             <TodoList
@@ -195,14 +193,12 @@ export const App: React.FC = () => {
             />
 
             {todos.length > 0 && (
-              <>
-                <Footer
-                  todos={todos}
-                  handleClearCompleted={clearCompletedTodos}
-                  filter={filter}
-                  setFilter={setFilter}
-                />
-              </>
+              <Footer
+                todos={todos}
+                handleClearCompleted={clearCompletedTodos}
+                filter={filter}
+                setFilter={setFilter}
+              />
             )}
           </div>
 
